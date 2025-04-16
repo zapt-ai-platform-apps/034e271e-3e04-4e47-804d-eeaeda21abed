@@ -6,6 +6,8 @@ import { restaurants, getMenuForRestaurant } from '../data/mockData';
 import LoadingSpinner from '@/modules/core/components/LoadingSpinner';
 import MenuItem from '../components/MenuItem';
 import MapView from '../components/MapView';
+import useLocation from '../hooks/useLocation';
+import { calculateDistance } from '../utils/distanceCalculator';
 import { useCart } from '@/modules/cart/context/CartContext';
 
 export default function RestaurantDetail() {
@@ -17,6 +19,14 @@ export default function RestaurantDetail() {
   const [activeCategory, setActiveCategory] = useState('');
   const [showMap, setShowMap] = useState(false);
   const { addToCart } = useCart();
+  
+  const { 
+    userLocation, 
+    loading: locationLoading,
+    getUserLocation 
+  } = useLocation();
+  
+  const [distance, setDistance] = useState(null);
 
   useEffect(() => {
     // Simulate API call
@@ -41,6 +51,16 @@ export default function RestaurantDetail() {
     
     return () => clearTimeout(timer);
   }, [id]);
+
+  useEffect(() => {
+    if (restaurant && userLocation) {
+      const calculatedDistance = calculateDistance(
+        userLocation,
+        { lat: restaurant.location.coordinates.lat, lng: restaurant.location.coordinates.lng }
+      );
+      setDistance(calculatedDistance);
+    }
+  }, [restaurant, userLocation]);
 
   const handleAddToCart = (item) => {
     if (restaurant) {
@@ -108,12 +128,18 @@ export default function RestaurantDetail() {
           <p className="text-sm md:text-base mb-2">{restaurant.cuisine}</p>
           <div className="flex items-center text-sm md:text-base space-x-4">
             <div className="flex items-center">
-              <FiStar className="mr-1" /> {restaurant.rating}
+              <FiStar className="mr-1" /> {rating}
             </div>
             <div className="flex items-center">
               <FiClock className="mr-1" /> {restaurant.deliveryTime} min
             </div>
             <div>Min. ${restaurant.minOrder}</div>
+            
+            {distance && (
+              <div className="flex items-center">
+                <FiMapPin className="mr-1" /> {distance.formatted}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -130,12 +156,32 @@ export default function RestaurantDetail() {
               </div>
             </div>
             <div className="flex space-x-3 w-full md:w-auto">
+              {!userLocation && (
+                <button 
+                  onClick={getUserLocation} 
+                  className="btn-secondary flex-1 md:flex-none flex items-center justify-center cursor-pointer"
+                  disabled={locationLoading}
+                >
+                  {locationLoading ? (
+                    <div className="flex items-center">
+                      <div className="w-4 h-4 border-2 border-t-transparent border-[#484848] rounded-full animate-spin mr-2"></div>
+                      Loading...
+                    </div>
+                  ) : (
+                    <>
+                      <FiMapPin className="mr-2" /> Find Your Distance
+                    </>
+                  )}
+                </button>
+              )}
+              
               <button 
                 onClick={toggleMap} 
                 className="btn-secondary flex-1 md:flex-none flex items-center justify-center cursor-pointer"
               >
                 {showMap ? 'Hide Map' : 'Show Map'}
               </button>
+              
               <button 
                 onClick={openDirections} 
                 className="btn-primary flex-1 md:flex-none flex items-center justify-center cursor-pointer"
@@ -151,6 +197,7 @@ export default function RestaurantDetail() {
                 restaurants={[restaurant]} 
                 selectedRestaurant={restaurant} 
                 height="300px" 
+                userLocation={userLocation}
               />
             </div>
           )}

@@ -5,8 +5,11 @@ import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 import CityFilter from '../components/CityFilter';
 import MapView from '../components/MapView';
+import AiAssistant from '../components/AiAssistant';
 import { restaurants, categories, cities } from '../data/mockData';
-import { FiMap, FiList } from 'react-icons/fi';
+import { sortByDistance } from '../utils/distanceCalculator';
+import useLocation from '../hooks/useLocation';
+import { FiMap, FiList, FiMapPin, FiCompass } from 'react-icons/fi';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -15,6 +18,15 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState('');
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'map'
+  const [sortMode, setSortMode] = useState('default'); // 'default', 'distance'
+  
+  const { 
+    userLocation, 
+    loading: locationLoading, 
+    error: locationError, 
+    locationPermission,
+    getUserLocation 
+  } = useLocation();
 
   useEffect(() => {
     // Simulate loading data
@@ -50,8 +62,13 @@ export default function Home() {
       );
     }
     
+    // Sort by distance if needed
+    if (sortMode === 'distance' && userLocation) {
+      results = sortByDistance(results, userLocation);
+    }
+    
     setFilteredRestaurants(results);
-  }, [searchTerm, selectedCategory, selectedCity]);
+  }, [searchTerm, selectedCategory, selectedCity, sortMode, userLocation]);
 
   const handleSearch = (term) => {
     setSearchTerm(term);
@@ -67,6 +84,17 @@ export default function Home() {
 
   const toggleViewMode = () => {
     setViewMode(viewMode === 'list' ? 'map' : 'list');
+  };
+
+  const handleSortModeChange = () => {
+    if (sortMode === 'default') {
+      if (!userLocation) {
+        getUserLocation();
+      }
+      setSortMode('distance');
+    } else {
+      setSortMode('default');
+    }
   };
 
   if (loading) {
@@ -95,36 +123,77 @@ export default function Home() {
           onCityChange={handleCityChange} 
         />
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between space-x-2">
           <button
             onClick={toggleViewMode}
             className="btn-secondary flex items-center cursor-pointer"
           >
             {viewMode === 'list' ? (
               <>
-                <FiMap className="mr-2" /> Show Map View
+                <FiMap className="mr-2" /> Show Map
               </>
             ) : (
               <>
-                <FiList className="mr-2" /> Show List View
+                <FiList className="mr-2" /> Show List
               </>
             )}
           </button>
           
-          {(searchTerm || selectedCategory || selectedCity) && (
+          <button
+            onClick={handleSortModeChange}
+            className={`flex items-center cursor-pointer ${
+              sortMode === 'distance' 
+                ? 'btn-primary' 
+                : 'btn-secondary'
+            }`}
+            title={
+              !userLocation && sortMode !== 'distance' 
+                ? 'Enable location to sort by distance' 
+                : sortMode === 'distance' 
+                  ? 'Using your location' 
+                  : 'Sort by distance from you'
+            }
+          >
+            {locationLoading ? (
+              <div className="flex items-center">
+                <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></div>
+                Loading...
+              </div>
+            ) : (
+              <>
+                {sortMode === 'distance' ? <FiMapPin className="mr-2" /> : <FiCompass className="mr-2" />}
+                {sortMode === 'distance' ? 'Sorting by Distance' : 'Sort by Distance'}
+              </>
+            )}
+          </button>
+          
+          {(searchTerm || selectedCategory || selectedCity || sortMode === 'distance') && (
             <button 
               onClick={() => {
                 setSearchTerm('');
                 setSelectedCategory('');
                 setSelectedCity('');
+                setSortMode('default');
               }} 
-              className="text-[#FF5A5F] font-medium cursor-pointer"
+              className="text-[#FF5A5F] font-medium cursor-pointer whitespace-nowrap"
             >
-              Clear filters
+              Clear All
             </button>
           )}
         </div>
       </div>
+      
+      {locationError && (
+        <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+          <p className="text-red-700">{locationError}</p>
+          <button 
+            onClick={getUserLocation}
+            className="mt-2 text-red-600 underline cursor-pointer"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
       
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-[#484848] mb-4">Browse by Category</h2>
@@ -143,7 +212,9 @@ export default function Home() {
               ? `${selectedCategory} Restaurants` 
               : searchTerm 
                 ? `Search Results for "${searchTerm}"` 
-                : "All Restaurants"}
+                : sortMode === 'distance'
+                  ? "Restaurants Near You"
+                  : "All Restaurants"}
         </h2>
         
         {filteredRestaurants.length === 0 ? (
@@ -161,15 +232,25 @@ export default function Home() {
             </button>
           </div>
         ) : viewMode === 'map' ? (
-          <MapView restaurants={filteredRestaurants} height="500px" />
+          <MapView 
+            restaurants={filteredRestaurants} 
+            height="500px" 
+            userLocation={userLocation}
+          />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRestaurants.map(restaurant => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+              <RestaurantCard 
+                key={restaurant.id} 
+                restaurant={restaurant} 
+                userLocation={userLocation}
+              />
             ))}
           </div>
         )}
       </div>
+      
+      <AiAssistant />
     </div>
   );
 }

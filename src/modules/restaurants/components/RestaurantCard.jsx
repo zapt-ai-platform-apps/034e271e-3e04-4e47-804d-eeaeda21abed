@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiStar, FiClock, FiMapPin } from 'react-icons/fi';
+import { calculateDistance } from '../utils/distanceCalculator';
 
-export default function RestaurantCard({ restaurant }) {
+export default function RestaurantCard({ restaurant, userLocation }) {
   const { id, name, image, cuisine, rating, deliveryTime, minOrder, location } = restaurant;
+  
+  const distance = userLocation ? calculateDistance(
+    userLocation,
+    { lat: location.coordinates.lat, lng: location.coordinates.lng }
+  ) : null;
 
   return (
     <Link to={`/restaurant/${id}`} className="block restaurant-card">
@@ -17,6 +23,12 @@ export default function RestaurantCard({ restaurant }) {
           <div className="absolute top-3 right-3 bg-white py-1 px-2 rounded-full text-sm font-medium text-[#484848] shadow-sm flex items-center">
             <FiStar className="text-[#FF5A5F] mr-1" /> {rating}
           </div>
+          
+          {distance && (
+            <div className="absolute bottom-3 right-3 bg-white py-1 px-2 rounded-full text-sm font-medium text-[#484848] shadow-sm">
+              {distance.formatted}
+            </div>
+          )}
         </div>
         <div className="p-4">
           <h3 className="text-lg font-medium text-[#484848] mb-1">{name}</h3>
