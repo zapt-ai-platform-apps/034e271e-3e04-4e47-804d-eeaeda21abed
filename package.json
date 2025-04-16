@@ -1,7 +1,7 @@
 {
-    "name": "reactjs-vite-tailwind-vercel",
+    "name": "food-khao",
     "version": "1.0.0",
-    "description": "ReactJS app with Vite, Tailwind",
+    "description": "Food Khao - Food Delivery App",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -11,8 +11,13 @@
     },
     "dependencies": {
         "@sentry/browser": "^8.41.0",
+        "@supabase/auth-ui-react": "^0.4.7",
+        "@supabase/auth-ui-shared": "^0.1.8",
+        "@zapt/zapt-js": "^1.0.23",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-icons": "^5.0.1",
+        "react-router-dom": "^6.22.2"
     },
     "devDependencies": {
         "@vitejs/plugin-react": "^4.3.4",

@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-color: #FF5A5F;
+  --secondary-color: #00A699;
+  --text-color: #484848;
+  --gray-light: #F7F7F7;
+  --gray-medium: #DDDDDD;
+  --gray-dark: #767676;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+    'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-color);
+  background-color: var(--gray-light);
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom button styles */
+.btn-primary {
+  @apply bg-[#FF5A5F] text-white px-4 py-2 rounded-lg font-medium 
+    hover:bg-[#FF4247] transition-colors duration-200 focus:outline-none
+    focus:ring-2 focus:ring-[#FF5A5F] focus:ring-opacity-50;
+}
+
+.btn-secondary {
+  @apply bg-white text-[#484848] border border-[#DDDDDD] px-4 py-2 
+    rounded-lg font-medium hover:bg-[#F7F7F7] transition-colors duration-200 
+    focus:outline-none focus:ring-2 focus:ring-[#DDDDDD] focus:ring-opacity-50;
+}
+
+/* Custom input styles */
+.input-primary {
+  @apply w-full px-4 py-2 border border-[#DDDDDD] rounded-lg box-border
+    focus:outline-none focus:ring-2 focus:ring-[#00A699] focus:ring-opacity-50
+    bg-white text-[#484848];
+}
+
+/* Custom card styles */
+.card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+}
+
+/* Restaurant card styles */
+.restaurant-card {
+  @apply transition-transform duration-200 hover:shadow-lg;
+}
+
+/* ZAPT badge */
+.zapt-badge {
+  @apply fixed bottom-4 left-4 text-xs text-[#767676] 
+    hover:text-[#484848] transition-colors duration-200;
+}
+
+@layer utilities {
+  /* Custom scrollbar */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Loader animation */
+.loader {
+  @apply w-6 h-6 border-2 border-[#DDDDDD] border-t-[#FF5A5F] rounded-full animate-spin;
+}
