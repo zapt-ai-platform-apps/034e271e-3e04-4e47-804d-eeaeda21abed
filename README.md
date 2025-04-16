@@ -1,67 +1,56 @@
-# Food Khao - Food Delivery App
+# Food Khao - Pakistani Food Delivery App
 
-Food Khao is a modern food delivery app that allows users to browse restaurants, order food, and track their deliveries.
+Food Khao is a food delivery app that connects users with Pakistani restaurants and food centers across Pakistan. Users can discover restaurants based on their location, browse menus, and place orders.
 
 ## Features
 
-- Browse restaurants by category
+- Browse Pakistani restaurants by city and category
+- View restaurant locations on a map
+- Get directions to restaurants
 - Search for restaurants and cuisines
-- View restaurant menus
-- Add items to cart
-- Place orders
-- View order history
+- View detailed restaurant information
+- Order food for delivery
+- Track order status
 - User authentication
+- Profile management
 
-## Technologies Used
+## Technology Stack
 
-- React.js with Vite
+- React
 - Tailwind CSS
-- React Router Dom
-- Supabase Authentication
+- React Router
+- Leaflet Maps
 - React Icons
-- PWA Support with Progressier
+- Supabase Authentication
 
 ## Getting Started
 
-### Prerequisites
+1. Clone this repository
+2. Install dependencies with `npm install`
+3. Create a `.env` file with the required environment variables
+4. Run the development server with `npm run dev`
 
-- Node.js (v14 or later)
-- npm or yarn
+## Scripts
 
-### Installation
+- `npm run dev` - Start the development server
+- `npm run build` - Build the app for production
+- `npm run serve` - Preview the production build
+- `npm run start` - Start the development server with host access
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Create a `.env` file in the root directory with the required environment variables.
-4. Start the development server:
-   ```
-   npm run dev
-   ```
+## Application Structure
 
-## Project Structure
-
-The project follows a modular architecture pattern with domain-based organization:
-
-- `/src/modules/` - Contains domain-specific modules
-  - `/auth` - Authentication related components and hooks
+- `/src/modules` - Core application modules
+  - `/auth` - Authentication related components
   - `/cart` - Shopping cart functionality
-  - `/core` - Core UI components and layouts
+  - `/core` - Core UI components
   - `/orders` - Order management
-  - `/restaurants` - Restaurant listings and menus
+  - `/restaurants` - Restaurant listing and details
   - `/user` - User profile management
 
 ## Deployment
 
-The app is configured for deployment on Vercel. To deploy:
+This app is configured for deployment on Vercel.
 
-1. Push your changes to your git repository
-2. Connect to Vercel
-3. Configure the environment variables
-4. Deploy
+## License
 
-## PWA Support
-
-The app uses Progressier for PWA capabilities, allowing users to install it on their devices.
+All rights reserved.

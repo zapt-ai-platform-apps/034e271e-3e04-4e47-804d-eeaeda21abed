@@ -72,3 +72,27 @@ body {
 .loader {
   @apply w-6 h-6 border-2 border-[#DDDDDD] border-t-[#FF5A5F] rounded-full animate-spin;
 }
+
+/* Leaflet map styles */
+.leaflet-container {
+  z-index: 10;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}
+
+.leaflet-popup-tip {
+  background-color: white;
+}
+
+.leaflet-container a {
+  color: var(--primary-color);
+}

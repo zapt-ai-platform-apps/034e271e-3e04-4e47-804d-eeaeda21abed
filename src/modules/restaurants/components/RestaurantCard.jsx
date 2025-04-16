@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiStar, FiClock } from 'react-icons/fi';
+import { FiStar, FiClock, FiMapPin } from 'react-icons/fi';
 
 export default function RestaurantCard({ restaurant }) {
-  const { id, name, image, cuisine, rating, deliveryTime, minOrder } = restaurant;
+  const { id, name, image, cuisine, rating, deliveryTime, minOrder, location } = restaurant;
 
   return (
     <Link to={`/restaurant/${id}`} className="block restaurant-card">
@@ -20,7 +20,10 @@ export default function RestaurantCard({ restaurant }) {
         </div>
         <div className="p-4">
           <h3 className="text-lg font-medium text-[#484848] mb-1">{name}</h3>
-          <p className="text-[#767676] text-sm mb-3">{cuisine}</p>
+          <p className="text-[#767676] text-sm mb-2">{cuisine}</p>
+          <div className="flex items-center text-[#767676] text-sm mb-2">
+            <FiMapPin className="mr-1" /> {location.city}, {location.area}
+          </div>
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center text-[#767676]">
               <FiClock className="mr-1" /> {deliveryTime} min

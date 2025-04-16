@@ -1,7 +1,7 @@
 {
     "name": "food-khao",
     "version": "1.0.0",
-    "description": "Food Khao - Food Delivery App",
+    "description": "Food Khao - Pakistani Food Delivery App",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -14,9 +14,11 @@
         "@supabase/auth-ui-react": "^0.4.7",
         "@supabase/auth-ui-shared": "^0.1.8",
         "@zapt/zapt-js": "^1.0.23",
+        "leaflet": "^1.9.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "^5.0.1",
+        "react-leaflet": "^4.2.1",
         "react-router-dom": "^6.22.2"
     },
     "devDependencies": {

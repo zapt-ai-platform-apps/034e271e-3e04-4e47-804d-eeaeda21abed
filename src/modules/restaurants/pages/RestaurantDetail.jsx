@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { FiStar, FiClock, FiArrowLeft } from 'react-icons/fi';
+import { FiStar, FiClock, FiArrowLeft, FiMapPin, FiNavigation } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { restaurants, getMenuForRestaurant } from '../data/mockData';
 import LoadingSpinner from '@/modules/core/components/LoadingSpinner';
 import MenuItem from '../components/MenuItem';
+import MapView from '../components/MapView';
 import { useCart } from '@/modules/cart/context/CartContext';
 
 export default function RestaurantDetail() {
@@ -14,6 +15,7 @@ export default function RestaurantDetail() {
   const [loading, setLoading] = useState(true);
   const [menuCategories, setMenuCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('');
+  const [showMap, setShowMap] = useState(false);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -47,6 +49,21 @@ export default function RestaurantDetail() {
         restaurantId: restaurant.id,
         restaurantName: restaurant.name,
       });
+    }
+  };
+
+  const toggleMap = () => {
+    setShowMap(!showMap);
+  };
+
+  const openDirections = () => {
+    if (restaurant && restaurant.location) {
+      const { lat, lng } = restaurant.location.coordinates;
+      window.open(
+        `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+        '_blank',
+        'noopener,noreferrer'
+      );
     }
   };
 
@@ -102,6 +119,43 @@ export default function RestaurantDetail() {
       </div>
       
       <div className="mt-6">
+        <div className="bg-white rounded-lg p-4 mb-6 shadow-sm">
+          <div className="flex items-start md:items-center flex-col md:flex-row justify-between">
+            <div className="flex items-start mb-3 md:mb-0">
+              <FiMapPin className="text-[#FF5A5F] mt-1 mr-2" size={18} />
+              <div>
+                <h3 className="font-medium text-[#484848]">Restaurant Location</h3>
+                <p className="text-[#767676]">{restaurant.location.address}</p>
+                <p className="text-[#767676]">{restaurant.location.city}, Pakistan</p>
+              </div>
+            </div>
+            <div className="flex space-x-3 w-full md:w-auto">
+              <button 
+                onClick={toggleMap} 
+                className="btn-secondary flex-1 md:flex-none flex items-center justify-center cursor-pointer"
+              >
+                {showMap ? 'Hide Map' : 'Show Map'}
+              </button>
+              <button 
+                onClick={openDirections} 
+                className="btn-primary flex-1 md:flex-none flex items-center justify-center cursor-pointer"
+              >
+                <FiNavigation className="mr-2" /> Get Directions
+              </button>
+            </div>
+          </div>
+          
+          {showMap && (
+            <div className="mt-4">
+              <MapView 
+                restaurants={[restaurant]} 
+                selectedRestaurant={restaurant} 
+                height="300px" 
+              />
+            </div>
+          )}
+        </div>
+        
         <p className="text-[#484848] mb-6">{restaurant.description}</p>
         
         {/* Category Navigation */}
